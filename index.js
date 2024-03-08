@@ -2,19 +2,22 @@ const express = require("express");
 const { createTodo, completeTodo } = require("./types");
 const { todo } = require("./db");
 const app = express();
+const cors = require("cors");
 app.use(express.json());
+app.use(cors());
 
 const PORT = 3000;
 
 app.post("/todo", async (req, res) => {
-  const todo = req.body;
-  const validTodo = createTodo.safeParse(todo);
+  const todoPayload = req.body;
+  const validTodo = createTodo.safeParse(todoPayload);
+  console.log(validTodo, req.body);
   if (validTodo.success) {
     await todo.create({
-      title: todo.title,
-      description: todo.description,
+      title: todoPayload.title,
+      description: todoPayload.description,
     });
-    res.json({
+    res.status(200).json({
       msg: "Todo Created",
     });
   } else {
@@ -35,6 +38,7 @@ app.get("/todos", async (req, res) => {
 app.put("/completed", async (req, res) => {
   const completedTodo = req.body;
   const isCompleteValid = completeTodo.safeParse(completedTodo);
+  console.log(isCompleteValid, req.body.id);
   if (isCompleteValid.success) {
     await todo.update(
       {
