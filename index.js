@@ -38,9 +38,9 @@ app.get("/todos", async (req, res) => {
 app.put("/completed", async (req, res) => {
   const completedTodo = req.body;
   const isCompleteValid = completeTodo.safeParse(completedTodo);
-  console.log(isCompleteValid, req.body.id);
+  console.log("incomplted", req.body.id);
   if (isCompleteValid.success) {
-    await todo.update(
+    await todo.updateOne(
       {
         _id: req.body.id,
       },
@@ -48,7 +48,7 @@ app.put("/completed", async (req, res) => {
         completed: true,
       }
     );
-    res.json({
+    res.status(200).json({
       msg: "Todo marked as completed",
     });
   } else {
